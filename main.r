@@ -129,3 +129,44 @@ MeasuresOfConcentration(redberriesData)
 redberriesHistogramBreaks <- CalculateHistogramBreaks(redberriesData, redberriesMeasuresOfAssociations)
 
 #hist(redberriesData, breaks = redberriesHistogramBreaks)
+
+blueberriesMeasuresOfAssociations <- MeasuresOfAssociation(blueberriesData)
+blueberriesMeasuresOfAssociations$Mean
+blueberriesMeasuresOfDiversity <- MeasuresOfDiversity(blueberriesData, blueberriesMeasuresOfAssociations)
+blueberriesMeasuresOfDiversity$Variance
+redberriesMeasuresOfAssociations <- MeasuresOfAssociation(redberriesData)
+redberriesMeasuresOfAssociations$Mean
+redberriesMeasuresOfDiversity <- MeasuresOfDiversity(redberriesData, redberriesMeasuresOfAssociations)
+redberriesMeasuresOfDiversity$Variance
+
+Statistic <- (redberriesMeasuresOfAssociations$Mean-blueberriesMeasuresOfAssociations$Mean)/sqrt(blueberriesMeasuresOfDiversity$Variance/25+redberriesMeasuresOfDiversity$Variance/25)
+Statistic
+
+
+ChiFact <- function(ufn, n)
+{
+  return (qchisq(ufn,n-1))
+}
+
+RelativeVarPrec <- function(downside,upside,vari) 
+{
+return(0.5*((upside - downside)/vari ))
+}
+
+AlfaFact <- 0.02
+AlfaFact
+
+ChiKw1 <- ChiFact(AlfaFact/2, 25)
+ChiKw1
+ChiKw2 <- ChiFact(1-AlfaFact/2, 25)
+ChiKw2
+
+uplimit <- 25*blueberriesMeasuresOfDiversity$Variance/ChiKw1
+uplimit
+downlimit <- 25*blueberriesMeasuresOfDiversity$Variance/ChiKw2
+downlimit
+
+
+
+precision <- RelativeVarPrec(downlimit, uplimit, blueberriesMeasuresOfDiversity$Variance)
+precision
