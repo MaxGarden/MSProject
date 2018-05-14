@@ -23,7 +23,7 @@ MeasuresOfAssociation <- function(data)
   }
   
   result <- vector(mode = "list", length = 7)
-
+  
   names(result)[EMeasuresOfAssociation$Mean] = "Mean"
   result[EMeasuresOfAssociation$Mean] <- mean(data)
   
@@ -56,13 +56,13 @@ MeasuresOfDiversity <- function(data, associationMeasuresData)
   
   names(result)[EMeasuresOfDiversity$ResultsRange] = "ResultsRange"
   result[EMeasuresOfDiversity$ResultsRange] <- (associationMeasuresData[[EMeasuresOfAssociation$Maximum]] - associationMeasuresData[[EMeasuresOfAssociation$Minimum]]) 
-
+  
   names(result)[EMeasuresOfDiversity$InterquartileRange] = "InterquartileRange"
   result[EMeasuresOfDiversity$InterquartileRange] <- IQR(data)
-
+  
   dataLength <- length(data)
   variance <- var(data) * (dataLength - 1) / dataLength;  
-
+  
   names(result)[EMeasuresOfDiversity$Variance] = "Variance"
   result[EMeasuresOfDiversity$Variance] <- variance
   
@@ -70,7 +70,7 @@ MeasuresOfDiversity <- function(data, associationMeasuresData)
   
   names(result)[EMeasuresOfDiversity$StandardDeviation] = "StandardDeviation"
   result[EMeasuresOfDiversity$StandardDeviation] <- standardDeviation
-    
+  
   names(result)[EMeasuresOfDiversity$VariationCoefficient] = "VariationCoefficient"
   result[EMeasuresOfDiversity$VariationCoefficient] <- (standardDeviation / associationMeasuresData[[EMeasuresOfAssociation$Mean]])
   
@@ -129,3 +129,124 @@ MeasuresOfConcentration(redberriesData)
 redberriesHistogramBreaks <- CalculateHistogramBreaks(redberriesData, redberriesMeasuresOfAssociations)
 
 #hist(redberriesData, breaks = redberriesHistogramBreaks)
+
+
+#zadanie 2 
+
+
+
+Ko³mogorow <- function(database)
+{
+data<- sort(database)
+n <-length(data)
+standardScore<-data 
+empiricalDistribution<-data 
+hypotheticalDistribution <- data
+difference <-data
+mean<-mean(data)
+standardDeviation<- sd(data)
+distributionTable = 0.264 
+
+for (i in 1:n) 
+{
+  standardScore[i] <- (data[i]- mean)/standardDeviation
+}
+
+for (i in 1:n) 
+{
+  hypotheticalDistribution[i] <- pnorm(standardScore[i])
+}
+
+for (i in 1:n) 
+{
+  empiricalDistribution[i]<-i/ length(data)
+}
+
+
+for (i in 1:n) 
+{
+  difference[i] <-abs(hypotheticalDistribution[i] - empiricalDistribution[i])
+}
+
+
+testStatisticValue<-max (difference)
+
+#writeLines("H0 - normal distribution\n")
+#writeLines("H1 - non normal distribution\n")
+
+
+if(testStatisticValue < distributionTable || testStatisticValue> 1){
+  writeLines("We can't rule out hypothesis H0\n")
+  writeLines("Normal distribution\n")
+}else{
+  writeLines("We can rule out hypothesis H0\n")
+  writeLines("Non normal distribuion\n")
+}
+}
+writeLines("blueberries:\n")
+blueberrieKo³mogorow <- Ko³mogorow(blueberriesData)
+blueberrieKo³mogorow
+writeLines("redberries:\n")
+redberrieKo³mogorow <- Ko³mogorow(redberriesData)
+redberrieKo³mogorow
+
+
+#zad 3
+TFact <- function(ufn, n)
+{
+  return (qt((1-(ufn/2)),n-1))
+}
+
+Tstudent <- TFact(AlfaFact, Count)
+
+redberriesDownlimitMean <- redberriesMeasuresOfAssociations$Mean - (Tstudent*sqrt(redberriesMeasuresOfDiversity$Variance)/sqrt(Count-1))
+redberriesDownlimitMean
+redberriesUplimitMean <- redberriesMeasuresOfAssociations$Mean + (Tstudent*sqrt(redberriesMeasuresOfDiversity$Variance)/sqrt(Count-1))
+redberriesUplimitMean
+
+redberriesPrecisionMean <- ((Tstudent*sqrt(redberriesMeasuresOfDiversity$Variance)/sqrt(Count-1))/redberriesMeasuresOfAssociations$Mean) * 100
+redberriesPrecisionMean
+
+#zad 5
+blueberriesMeasuresOfAssociations <- MeasuresOfAssociation(blueberriesData)
+blueberriesMeasuresOfAssociations$Mean
+blueberriesMeasuresOfDiversity <- MeasuresOfDiversity(blueberriesData, blueberriesMeasuresOfAssociations)
+blueberriesMeasuresOfDiversity$Variance
+redberriesMeasuresOfAssociations <- MeasuresOfAssociation(redberriesData)
+redberriesMeasuresOfAssociations$Mean
+redberriesMeasuresOfDiversity <- MeasuresOfDiversity(redberriesData, redberriesMeasuresOfAssociations)
+redberriesMeasuresOfDiversity$Variance
+
+Statistic <- (redberriesMeasuresOfAssociations$Mean-blueberriesMeasuresOfAssociations$Mean)/sqrt(blueberriesMeasuresOfDiversity$Variance/25+redberriesMeasuresOfDiversity$Variance/25)
+Statistic
+
+
+
+#zad 4
+ChiFact <- function(ufn, n)
+{
+  return (qchisq(ufn,n-1))
+}
+
+RelativeVarPrec <- function(downside,upside,vari) 
+{
+return(0.5*((upside - downside)/vari ))
+}
+
+AlfaFact <- 0.02
+AlfaFact
+
+ChiKw1 <- ChiFact(AlfaFact/2, 25)
+ChiKw1
+ChiKw2 <- ChiFact(1-AlfaFact/2, 25)
+ChiKw2
+
+uplimit <- 25*blueberriesMeasuresOfDiversity$Variance/ChiKw1
+uplimit
+downlimit <- 25*blueberriesMeasuresOfDiversity$Variance/ChiKw2
+downlimit
+
+
+
+precision <- RelativeVarPrec(downlimit, uplimit, blueberriesMeasuresOfDiversity$Variance)
+precision
