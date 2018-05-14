@@ -134,7 +134,10 @@ redberriesHistogramBreaks <- CalculateHistogramBreaks(redberriesData, redberries
 #zadanie 2 
 
 
-data<- sort(blueberriesData)
+
+Ko³mogorow <- function(database)
+{
+data<- sort(database)
 n <-length(data)
 standardScore<-data 
 empiricalDistribution<-data 
@@ -172,8 +175,6 @@ testStatisticValue<-max (difference)
 #writeLines("H1 - non normal distribution\n")
 
 
-
-writeLines("blueberries:\n")
 if(testStatisticValue < distributionTable || testStatisticValue> 1){
   writeLines("We can't rule out hypothesis H0\n")
   writeLines("Normal distribution\n")
@@ -181,59 +182,13 @@ if(testStatisticValue < distributionTable || testStatisticValue> 1){
   writeLines("We can rule out hypothesis H0\n")
   writeLines("Non normal distribuion\n")
 }
-
-
-
-
-
-
-data<- sort(redberriesData)
-n <-length(data)
-standardScore<-data 
-empiricalDistribution<-data 
-hypotheticalDistribution <- data
-difference <-data
-mean<-mean(data)
-standardDeviation<- sd(data)
-distributionTable = 0.264 
-
-for (i in 1:n) 
-{
-  standardScore[i] <- (data[i]- mean)/standardDeviation
 }
-
-for (i in 1:n) 
-{
-  hypotheticalDistribution[i] <- pnorm(standardScore[i])
-}
-
-for (i in 1:n) 
-{
-  empiricalDistribution[i]<-i/ length(data)
-}
-
-
-for (i in 1:n) 
-{
-  difference[i] <-abs(hypotheticalDistribution[i] - empiricalDistribution[i])
-}
-
-
-testStatisticValue<-max (difference)
-
-#writeLines("H0 - normal distribution\n")
-#writeLines("H1 - non normal distribution\n")
-
-
-
 writeLines("blueberries:\n")
-if(testStatisticValue < distributionTable || testStatisticValue> 1){
-  writeLines("We can't rule out hypothesis H0\n")
-  writeLines("Normal distribution\n")
-}else{
-  writeLines("We can rule out hypothesis H0\n")
-  writeLines("Non normal distribuion\n")
-}
+blueberrieKo³mogorow <- Ko³mogorow(blueberriesData)
+blueberrieKo³mogorow
+writeLines("redberries:\n")
+redberrieKo³mogorow <- Ko³mogorow(redberriesData)
+redberrieKo³mogorow
 
 
 #zad 3
