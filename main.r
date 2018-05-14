@@ -236,45 +236,21 @@ if(testStatisticValue < distributionTable || testStatisticValue> 1){
 }
 
 
-
-#zad 3 
-TStudentFactor <- function(confident, n)
+#zad 3
+TFact <- function(ufn, n)
 {
-  return (qt ((1-confident ) /2,n-1, lower.tail = FALSE, log.p = FALSE))
+  return (qt((1-(ufn/2)),n-1))
 }
 
+Tstudent <- TFact(AlfaFact, Count)
 
-lowerLimitMean <- function(mean, factor, deviation, number)
-{
-  lowerLimit = mean - factor *(deviation/ sqrt (number - 1))
-  return (lowerLimit)  
-}
+redberriesDownlimitMean <- redberriesMeasuresOfAssociations$Mean - (Tstudent*sqrt(redberriesMeasuresOfDiversity$Variance)/sqrt(Count-1))
+redberriesDownlimitMean
+redberriesUplimitMean <- redberriesMeasuresOfAssociations$Mean + (Tstudent*sqrt(redberriesMeasuresOfDiversity$Variance)/sqrt(Count-1))
+redberriesUplimitMean
 
-
-
-upperLimitMean <- function(mean, factor, deviation, number)
-{
-  upperLimit = mean + factor *(deviation/ sqrt (number - 1))
-  return (upperLimit)  
-}
-
-
-meanPrecision <-function (ul, ll, mean)
-{
-  estimateprecision = 0.5 * (ul-ll)/ mean
-  return (estimateprecision)
-  
-}
-
-meanRedberries <- sum(redberriesData) / length (redberriesData)
-
-upperLimitRedberries <- upperLimitMean(meanRedberries,TStudentFactor(0.98,25 ), standardDeviation, length (redberriesData))
-lowerLimitRedberries <- lowerLimitMean(meanRedberries,TStudentFactor(0.98,25 ), standardDeviation, length (redberriesData))
-
-precisionRedberries <- meanPrecision(upperLimitRedberries, lowerLimitRedberries, meanRedberries)
-
-
-print(precisionRedberries)
+redberriesPrecisionMean <- ((Tstudent*sqrt(redberriesMeasuresOfDiversity$Variance)/sqrt(Count-1))/redberriesMeasuresOfAssociations$Mean) * 100
+redberriesPrecisionMean
 
 #zad 5
 blueberriesMeasuresOfAssociations <- MeasuresOfAssociation(blueberriesData)
