@@ -23,7 +23,7 @@ MeasuresOfAssociation <- function(data)
   }
   
   result <- vector(mode = "list", length = 7)
-
+  
   names(result)[EMeasuresOfAssociation$Mean] = "Mean"
   result[EMeasuresOfAssociation$Mean] <- mean(data)
   
@@ -56,13 +56,13 @@ MeasuresOfDiversity <- function(data, associationMeasuresData)
   
   names(result)[EMeasuresOfDiversity$ResultsRange] = "ResultsRange"
   result[EMeasuresOfDiversity$ResultsRange] <- (associationMeasuresData[[EMeasuresOfAssociation$Maximum]] - associationMeasuresData[[EMeasuresOfAssociation$Minimum]]) 
-
+  
   names(result)[EMeasuresOfDiversity$InterquartileRange] = "InterquartileRange"
   result[EMeasuresOfDiversity$InterquartileRange] <- IQR(data)
-
+  
   dataLength <- length(data)
   variance <- var(data) * (dataLength - 1) / dataLength;  
-
+  
   names(result)[EMeasuresOfDiversity$Variance] = "Variance"
   result[EMeasuresOfDiversity$Variance] <- variance
   
@@ -70,7 +70,7 @@ MeasuresOfDiversity <- function(data, associationMeasuresData)
   
   names(result)[EMeasuresOfDiversity$StandardDeviation] = "StandardDeviation"
   result[EMeasuresOfDiversity$StandardDeviation] <- standardDeviation
-    
+  
   names(result)[EMeasuresOfDiversity$VariationCoefficient] = "VariationCoefficient"
   result[EMeasuresOfDiversity$VariationCoefficient] <- (standardDeviation / associationMeasuresData[[EMeasuresOfAssociation$Mean]])
   
@@ -113,22 +113,44 @@ CalculateHistogramBreaks <- function(data, associationMeasuresData)
 }
 
 blueberriesMeasuresOfAssociations <- MeasuresOfAssociation(blueberriesData)
-blueberriesMeasuresOfAssociations
-MeasuresOfDiversity(blueberriesData, blueberriesMeasuresOfAssociations)
-MeasuresOfAsymmetry(blueberriesData)
-MeasuresOfConcentration(blueberriesData)
+blueberriesMeasuresOfDiversity <- MeasuresOfDiversity(blueberriesData, blueberriesMeasuresOfAssociations)
+blueberriesMeasuresOfAsymmetry <- MeasuresOfAsymmetry(blueberriesData)
+blueberriesMeasuresOfConcentration <- MeasuresOfConcentration(blueberriesData)
 blueberriesHistogramBreaks <- CalculateHistogramBreaks(blueberriesData, blueberriesMeasuresOfAssociations)
 
-#hist(blueberriesData, breaks = blueberriesHistogramBreaks)
+writeLines("Blueberries' measures of associations:");
+print(blueberriesMeasuresOfAssociations);
+
+writeLines("Blueberries' measures of diversity:");
+print(blueberriesMeasuresOfDiversity);
+
+writeLines("Blueberries' measures of asymmetry:");
+print(blueberriesMeasuresOfAsymmetry);
+
+writeLines("Blueberries' measures of concentration:");
+print(blueberriesMeasuresOfConcentration);
+
+hist(blueberriesData, breaks = blueberriesHistogramBreaks)
 
 redberriesMeasuresOfAssociations <- MeasuresOfAssociation(redberriesData)
-redberriesMeasuresOfAssociations
-MeasuresOfDiversity(redberriesData, redberriesMeasuresOfAssociations)
-MeasuresOfAsymmetry(redberriesData)
-MeasuresOfConcentration(redberriesData)
+redberriesMeasuresOfDiversity <- MeasuresOfDiversity(redberriesData, redberriesMeasuresOfAssociations)
+redberriesMeasuresOfAsymmetry <- MeasuresOfAsymmetry(redberriesData)
+redberriesMeasuresOfConcentration <- MeasuresOfConcentration(redberriesData)
 redberriesHistogramBreaks <- CalculateHistogramBreaks(redberriesData, redberriesMeasuresOfAssociations)
 
-#hist(redberriesData, breaks = redberriesHistogramBreaks)
+writeLines("Redberries' measures of associations:");
+print(redberriesMeasuresOfAssociations);
+
+writeLines("Redberries' measures of diversity:");
+print(redberriesMeasuresOfDiversity);
+
+writeLines("Redberries' measures of asymmetry:");
+print(redberriesMeasuresOfAsymmetry);
+
+writeLines("Redberries' measures of concentration:");
+print(redberriesMeasuresOfConcentration);
+
+hist(redberriesData, breaks = redberriesHistogramBreaks)
 
 blueberriesMeasuresOfAssociations <- MeasuresOfAssociation(blueberriesData)
 blueberriesMeasuresOfAssociations$Mean
@@ -151,49 +173,51 @@ Kolmogorow <- function(database, mea, varia)
   difference <-database
   differenceTwo<- database 
   
-for (i in 1:n) 
-{
-  stdX[i]<- ((data[i] -mea )/ sqrt(varia) )
-}
-
-for (i in 1:n) 
-{
-  inn[i] <- (i / n )
-}
+  for (i in 1:n) 
+  {
+    stdX[i]<- ((data[i] -mea )/ sqrt(varia) )
+  }
   
-for (i in 1:n) 
-{
-  distribution[i] <- pnorm(stdX[i]) 
-}
-
-for (i in 1:n) 
-{
-  difference[i] <-abs(distribution [i] -inn [i] )  
-}
-
-for (i in 1:n) 
-{
-  differenceTwo[i] <-abs( (i -1) / n -distribution [i]) 
-}
-
-
-tmp <-max (difference)
-tmpSec <-max (differenceTwo)
-testStatisticValue <-pmax (difference, differenceTwo)
-
-
-if(testStatisticValue < distributionTable || testStatisticValue> 1)
-{
-  writeLines("We can't rule out hypothesis H0\n")
-  writeLines("Normal distribution\n")
-}
-
-else
-{
-  writeLines("We can rule out hypothesis H0\n")
-  writeLines("Non normal distribuion\n")
-}
-
+  for (i in 1:n) 
+  {
+    inn[i] <- (i / n )
+  }
+  
+  for (i in 1:n) 
+  {
+    distribution[i] <- pnorm(stdX[i]) 
+  }
+  
+  for (i in 1:n) 
+  {
+    difference[i] <-abs(distribution [i] -inn [i] )  
+  }
+  
+  for (i in 1:n) 
+  {
+    differenceTwo[i] <-abs( (i -1) / n -distribution [i]) 
+  }
+  
+  
+  tmp <-max (difference)
+  tmpSec <-max (differenceTwo)
+  testStatisticValue <-max (difference, differenceTwo)
+  
+  writeLines("Kolmogorow's statistic's value")
+  print(testStatisticValue)
+  writeLines("\nCritical area <0,264; 1>")
+  
+  if(testStatisticValue < distributionTable || testStatisticValue> 1)
+  {
+    writeLines("We can't rule out hypothesis H0\n")
+    writeLines("Normal distribution\n")
+  }
+  
+  else
+  {
+    writeLines("We can rule out hypothesis H0\n")
+    writeLines("Non normal distribuion\n")
+  }
 }
 
 writeLines("blueberries:\n")
@@ -202,5 +226,3 @@ blueberrieKolmogorow <- Kolmogorow(blueberriesData,blueberriesMeasuresOfAssociat
 
 writeLines("redberries:\n")
 redberrieKolmogorow <- Kolmogorow(redberriesData, redberriesMeasuresOfAssociations$Mean,  redberriesMeasuresOfDiversity$Variance)
-
-
