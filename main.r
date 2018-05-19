@@ -129,3 +129,78 @@ MeasuresOfConcentration(redberriesData)
 redberriesHistogramBreaks <- CalculateHistogramBreaks(redberriesData, redberriesMeasuresOfAssociations)
 
 #hist(redberriesData, breaks = redberriesHistogramBreaks)
+
+blueberriesMeasuresOfAssociations <- MeasuresOfAssociation(blueberriesData)
+blueberriesMeasuresOfAssociations$Mean
+blueberriesMeasuresOfDiversity <- MeasuresOfDiversity(blueberriesData, blueberriesMeasuresOfAssociations)
+blueberriesMeasuresOfDiversity$Variance
+redberriesMeasuresOfAssociations <- MeasuresOfAssociation(redberriesData)
+redberriesMeasuresOfAssociations$Mean
+redberriesMeasuresOfDiversity <- MeasuresOfDiversity(redberriesData, redberriesMeasuresOfAssociations)
+redberriesMeasuresOfDiversity$Variance
+
+
+Kolmogorow <- function(database, mea, varia) 
+{ 
+  data<- sort(database) 
+  n <-length(data)
+  stdX <- database 
+  distributionTable <- 0.264  
+  inn<- database
+  distribution <-database
+  difference <-database
+  differenceTwo<- database 
+  
+for (i in 1:n) 
+{
+  stdX[i]<- ((data[i] -mea )/ sqrt(varia) )
+}
+
+for (i in 1:n) 
+{
+  inn[i] <- (i / n )
+}
+  
+for (i in 1:n) 
+{
+  distribution[i] <- pnorm(stdX[i]) 
+}
+
+for (i in 1:n) 
+{
+  difference[i] <-abs(distribution [i] -inn [i] )  
+}
+
+for (i in 1:n) 
+{
+  differenceTwo[i] <-abs( (i -1) / n -distribution [i]) 
+}
+
+
+tmp <-max (difference)
+tmpSec <-max (differenceTwo)
+testStatisticValue <-pmax (difference, differenceTwo)
+
+
+if(testStatisticValue < distributionTable || testStatisticValue> 1)
+{
+  writeLines("We can't rule out hypothesis H0\n")
+  writeLines("Normal distribution\n")
+}
+
+else
+{
+  writeLines("We can rule out hypothesis H0\n")
+  writeLines("Non normal distribuion\n")
+}
+
+}
+
+writeLines("blueberries:\n")
+blueberrieKolmogorow <- Kolmogorow(blueberriesData,blueberriesMeasuresOfAssociations$Mean,  blueberriesMeasuresOfDiversity$Variance)
+
+
+writeLines("redberries:\n")
+redberrieKolmogorow <- Kolmogorow(redberriesData, redberriesMeasuresOfAssociations$Mean,  redberriesMeasuresOfDiversity$Variance)
+
+
