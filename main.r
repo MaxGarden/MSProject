@@ -211,12 +211,11 @@ redberriesPrecisionMean <- ((FactNorm*redberriesMeasuresOfDiversity$Variance/sqr
 redberriesPrecisionMean
 
 #zad 4
-NormFact2 <- NormFact(1 - AlfaFact)
-NormFact2
 
-blueberriesDownlimitMean <- sqrt(blueberriesMeasuresOfAssociations$Mean) - NormFact2*sqrt(blueberriesMeasuresOfAssociations$Mean)/sqrt(2*length(blueberriesData))
+
+blueberriesDownlimitMean <- sqrt(blueberriesMeasuresOfAssociations$Mean) - FactNorm*sqrt(blueberriesMeasuresOfAssociations$Mean)/sqrt(2*length(blueberriesData))
 blueberriesDownlimitMean
-blueberriesUplilitMean <- sqrt(blueberriesMeasuresOfAssociations$Mean) + NormFact2*sqrt(blueberriesMeasuresOfAssociations$Mean)/sqrt(2*length(blueberriesData))
+blueberriesUplilitMean <- sqrt(blueberriesMeasuresOfAssociations$Mean) + FactNorm*sqrt(blueberriesMeasuresOfAssociations$Mean)/sqrt(2*length(blueberriesData))
 blueberriesUplilitMean
 
 #zad 5
