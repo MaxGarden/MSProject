@@ -3,6 +3,7 @@ library(moments)
 blueberriesData <- scan("blueberriesData.txt", double(), quote = "")
 redberriesData <- scan("redberriesData.txt", double(), quote = "")
 
+#zad1
 EMeasuresOfAssociation <- list(Mean = 1, Mode = 2, Minimum = 3, FirstQuartile = 4, Median = 5, ThirdQuartile = 6, Maximum = 7)
 
 MeasuresOfAssociation <- function(data)
@@ -161,6 +162,7 @@ redberriesMeasuresOfAssociations$Mean
 redberriesMeasuresOfDiversity <- MeasuresOfDiversity(redberriesData, redberriesMeasuresOfAssociations)
 redberriesMeasuresOfDiversity$Variance
 
+#zad2
 Kolmogorow <- function(database, mea, varia)
 {
   data<- sort(database)
@@ -212,3 +214,67 @@ blueberrieKolmogorow <- Kolmogorow(blueberriesData,blueberriesMeasuresOfAssociat
 
 writeLines("Redberries:\n")
 redberrieKolmogorow <- Kolmogorow(redberriesData, redberriesMeasuresOfAssociations$Mean,  redberriesMeasuresOfDiversity$Variance)
+
+#zad 3
+MeanIntervalEstimation <- function(Mean,StandardDeviation,DataLenght,AlfaFact)
+{
+  FactNorm <- qnorm(1 - AlfaFact/2)
+  halfIntervalLenght <- FactNorm*StandardDeviation/sqrt(DataLenght)
+  DownlimitMean <- Mean - halfIntervalLenght
+  UplimitMean <-  Mean + halfIntervalLenght
+  intervalLenght <- 2 * halfIntervalLenght
+  PrecisionMean <- halfIntervalLenght/Mean * 100
+  writeLines("Estimated mean range: ")
+  print(DownlimitMean)
+  print(UplimitMean)
+  writeLines("Mean Interval lenght: ")
+  print(intervalLenght)
+  writeLines("Precision: ")
+  print(PrecisionMean)
+}
+writeLines("Redberries:")
+redberriesMeanIntervalEstimation <-MeanIntervalEstimation(redberriesMeasuresOfAssociations$Mean, redberriesMeasuresOfDiversity$StandardDeviation, 25, 0.02)
+writeLines("\n")
+
+#zad 4
+VarianceIntervalEstimation <- function(Mean,StandardDeviation,DataLenght,AlfaFact)
+{
+  FactNorm <- qnorm(1 - AlfaFact/2)
+  halfIntervalLenght <- FactNorm*StandardDeviation/sqrt(2*DataLenght)
+  DownlimitMean <- StandardDeviation - halfIntervalLenght
+  UplimitMean <-  StandardDeviation + halfIntervalLenght
+  intervalLenght <- 2 * halfIntervalLenght
+  PrecisionMean <- halfIntervalLenght/Mean * 100
+  writeLines("Estimated standard deviation range: ")
+  print(DownlimitMean)
+  print(UplimitMean)
+  writeLines("Standard deviation interval lenght: ")
+  print(intervalLenght)
+  writeLines("Precision: ")
+  print(PrecisionMean)
+}
+writeLines("Blueberries:")
+blueberriesMeanIntervalEstimation <-VarianceIntervalEstimation(blueberriesMeasuresOfAssociations$Mean, blueberriesMeasuresOfDiversity$StandardDeviation, 25, 0.02)
+writeLines("\n")
+
+#zad5
+SameMeanValueTest <-function(FirstMean, FirstVariance, FirstCount, SecondMean, SecondVariance, SecondCount, AlfaFactor)
+{
+  Statistic <- (FirstMean-SecondMean)/sqrt(FirstVariance/FirstCount+SecondVariance/SecondCount)
+  FactNorm <- qnorm(1 - 0.05/2)
+  writeLines("Our Statistic: ")
+  print(Statistic)
+  writeLines("Critical area quantile: ")
+  print(FactNorm)
+  if(Statistic > FactNorm || Statistic < -FactNorm)
+  {
+    writeLines("We can rule out H0")
+    writeLines("Means are not equal")
+  }
+  else
+  {
+    writeLines("We can't rule out H0")
+    writeLines("Means are most likely equal")
+  }
+}
+Test <-SameMeanValueTest(redberriesMeasuresOfAssociations$Mean, redberriesMeasuresOfDiversity$Variance, 25,blueberriesMeasuresOfAssociations$Mean, blueberriesMeasuresOfDiversity$Variance, 25)
